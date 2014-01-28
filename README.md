@@ -2,6 +2,8 @@
 
 A Clojure library designed to listen in a campfire room, filter messages to ones that have a specific prefix, interpret those as Tex expressions, generate an image of the expression, and paste it into the room.
 
+Requirements not pulled in by this project include latex, convert, and possibly others.
+
 Still incredibly beta.
 
 ## Usage
