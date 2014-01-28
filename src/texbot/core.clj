@@ -1,23 +1,18 @@
 (ns texbot.core
-  (:require [clj-campfire.core :as cf])
+  (:require [clj-campfire.core :as cf]
+            [texbot.creds :as creds])
   (:use [clojure.java.shell :only [sh]]))
 
 (def trigger-string "$$")
-
-(def cf-settings {:api-token "xxxxx"
-                  :ssl true
-                  :sub-domain "xxx"})
-
-(def room-name "xxx")
 
 (defn handle-message
   [msg]
   (try
     (println "msg initially: " msg)
-    (if (= (subs (:body msg) 0 2) "$$")
+    (if (= (subs (:body msg) 0 (count trigger-string)) trigger-string)
       (do
-        (sh "./tex2im" "-r" "400x400" "-a" (subs (:body msg) 2))
-        (cf/upload cf-settings room-name "out.png")))
+        (sh "./tex2im" "-r" "400x400" "-a" (subs (:body msg) (count trigger-string)))
+        (cf/upload creds/cf-settings creds/room-name "out.png")))
     (catch Exception e
       (println "Got exception: " e))))
 
@@ -28,5 +23,5 @@
 
 (defn listen-messages
   [room]
-  (cf/stream-messages cf-settings room message-handler-wrapper))
+  (cf/stream-messages creds/cf-settings room message-handler-wrapper))
 
